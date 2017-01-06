@@ -73,10 +73,10 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
         const full_object_detection& d = shapes[i];
 
         if(emotion == 0) {
-            lines.push_back(dlib::image_window::overlay_line(point(150, 50), point(150, 450), rgb_pixel(255,0,0)));
-            lines.push_back(dlib::image_window::overlay_line(point(150, 450), point(500, 450), rgb_pixel(255,0,0)));
-            lines.push_back(dlib::image_window::overlay_line(point(500, 450), point(500, 50), rgb_pixel(255,0,0)));
-            lines.push_back(dlib::image_window::overlay_line(point(500, 50), point(150, 50), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(200, 100), point(200, 400), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(200, 400), point(450, 400), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(450, 400), point(450, 100), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(450, 100), point(200, 100), rgb_pixel(255,0,0)));
         }
 
 
