@@ -47,7 +47,7 @@ using namespace std;
 using namespace drumstick::rt;
 
 FaceRecognizer::FaceRecognizer()
-    : emotion(0)
+    : note(0)
 {
 }
 
@@ -72,7 +72,7 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
 
         const full_object_detection& d = shapes[i];
 
-        if(emotion == 0) {
+        if(note == 0) {
             lines.push_back(dlib::image_window::overlay_line(point(200, 100), point(200, 400), rgb_pixel(255,0,0)));
             lines.push_back(dlib::image_window::overlay_line(point(200, 400), point(450, 400), rgb_pixel(255,0,0)));
             lines.push_back(dlib::image_window::overlay_line(point(450, 400), point(450, 100), rgb_pixel(255,0,0)));
@@ -81,11 +81,11 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
 
 
         // lips outer part
-        for (int i = 49; i < 59; ++i) {
-            lines.push_back(dlib::image_window::overlay_line(d.part(i), d.part(i - 1), rgb_pixel(0,100,255)));
-        }
+        //for (int i = 49; i < 59; ++i) {
+        //    lines.push_back(dlib::image_window::overlay_line(d.part(i), d.part(i - 1), rgb_pixel(0,100,255)));
+        //}
 
-        lines.push_back(dlib::image_window::overlay_line(d.part(48), d.part(59), rgb_pixel(255,0,125)));
+        //lines.push_back(dlib::image_window::overlay_line(d.part(48), d.part(59), rgb_pixel(255,0,125)));
         // end Lips outer Part
 
         // Lips inside part
@@ -95,22 +95,6 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
 
         lines.push_back(dlib::image_window::overlay_line(d.part(60), d.part(67), rgb_pixel(255,0,0)));
         // end Lips inside Part
-
-        // left eye
-        for (int i = 37; i < 42; ++i) {
-            lines.push_back(dlib::image_window::overlay_line(d.part(i), d.part(i - 1), rgb_pixel(0,100,255)));
-        }
-
-        lines.push_back(dlib::image_window::overlay_line(d.part(36), d.part(41), rgb_pixel(255,0,125)));
-        // end left eye
-
-        // right eye
-        for (int i = 43; i <= 47; ++i) {
-           lines.push_back(image_window::overlay_line(d.part(i), d.part(i-1), rgb_pixel(120,120,255)));
-        }
-
-        lines.push_back(dlib::image_window::overlay_line(d.part(42), d.part(47), rgb_pixel(255,0,0)));
-        // end right eye
 
         // right eyeline
         for (int i = 23; i < 26; ++i) {
@@ -125,13 +109,23 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
         lines.push_back(dlib::image_window::overlay_line(d.part(21), d.part(22), rgb_pixel(255,0,0)));
         // end left eyeline
 
-         lines.push_back(dlib::image_window::overlay_line(d.part(27), d.part(27), rgb_pixel(0,0,0)));
+         point lowerA = point(0,500);
+
+         for(int i = 19; i < 25; i++) {
+             if (d.part(i).y() < lowerA.y()){
+                 lowerA = d.part(i);
+             }
+         }
+
+         int an = d.part(27).y() - lowerA.y();
+
+
 
         // read left and right point, WARUM 0,500???
         point upper = point(0,0);
         point lower = point(0,500);
 
-        for(int i = 48; i < 68; i++) {
+        for(int i = 61; i < 68; i++) {
             if (d.part(i).y() < lower.y()){
                 lower = d.part(i);
             }
@@ -140,64 +134,24 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
             }
         }
 
+        lines.push_back(dlib::image_window::overlay_line(lower, upper, rgb_pixel(255,0,0)));
+
          lines.push_back(dlib::image_window::overlay_line(d.part(21), d.part(27), rgb_pixel(0,0,0)));
          lines.push_back(dlib::image_window::overlay_line(d.part(22), d.part(27), rgb_pixel(0,0,0)));
 
         //Mundhöhe
-        // Vincent:
-        // Neutral = 38 - 43
-        // Zusammengezogen = 22 - 39
-        // Hochgezogen = 140 - 150
         long mh = (upper-lower).length();
-        //qDebug() << "Mundhöhe:";
-        //qDebug() << mh;
 
-        //Distanz Nasenmitte - Augenbrauen (l + r)
-        // Vincent:
-        // Neutral = 33 - 36
-        // Zusammengezogen = 27 - 28
-        // Hochgezogen = 54 - 56
-        long nely = d.part(27).y() - d.part(21).y();
-        long nery = d.part(27).y() - d.part(22).y();
-        long nelx = d.part(27).x() - d.part(21).x();
-        long nerx = d.part(27).x() - d.part(22).x();
-        long distance_nel = sqrt(pow(nely, 2) + pow(nelx, 2));
-        long distance_ner = sqrt(pow(nery, 2) + pow(nerx, 2));
+        int octave = (an-35) / 3;
 
-
-        //qDebug() << "Nel:";
-        //qDebug() << nely;
-        //qDebug() << nelx;
-        //qDebug() << distance_nel;
-        //qDebug() << "Ner:";
-        //qDebug() << distance_ner;
-
-        //rechte Augenbraue - Höhe:
-        long augr = d.part(25).y() - d.part(22).y();
-        lines.push_back(dlib::image_window::overlay_line(d.part(22), d.part(25), rgb_pixel(0,0,0)));
-
-        //linke Augenbraue - Höhe
-        long augl = d.part(18).y() - d.part(21).y();
-        lines.push_back(dlib::image_window::overlay_line(d.part(18), d.part(21), rgb_pixel(0,0,0)));
-
-
-        /*qDebug() << "Augr:";
-        qDebug() << augr;*/
-        qDebug() << "Augl:";
-        qDebug() << augl;
-
-        emotion = augr;
-
-        //Lippenhöhe
-        //long lipheight = max(upper.y() - d.part(48).y(), upper.y() - d.part(54).y());
-
-        //qDebug() << lipheight;
-
+        int noteNumber = (mh-10) / 8;
+        qDebug() << noteNumber;
+        note = octave*12 + noteNumber;
     }
 
     return lines;
 }
 
-int FaceRecognizer::getEmotion(){
-    return emotion;
+int FaceRecognizer::getNote(){
+    return note;
 }

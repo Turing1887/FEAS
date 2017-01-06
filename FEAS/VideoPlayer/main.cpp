@@ -15,11 +15,8 @@ using namespace drumstick::rt;
 
 int main()
 {
-    int channel = 2;
-   //  int note = 60;
-    int velocity = 80;
-    int noteC = 60;
     int tmp;
+    int frameCount = 1;
     try
     {
         MIDIOutput midiOutput;
@@ -42,21 +39,9 @@ int main()
 
         // Grab and process frames until the main window is closed by the user.
 
-
-        /*if (emotion == 1){
-            qDebug() << "emotion: glücklich";
-        } else {
-            qDebug() << "emotion: neutral";
-        }*/
-        //qDebug() << emotion;
-         //int note = emotion + 50;
-        //qDebug() << note;
-
-        //midiOutput.sendNoteOff(channel, emotion%128, 0);
-
-
         while(!win.is_closed())
         {
+            frameCount++;
 
             // schleife erstmal nur für einen Frame ausführen
             if (true){
@@ -71,37 +56,43 @@ int main()
                 // while using cimg.
                 cv_image<bgr_pixel> cimg(temp);
 
-                // Detect faces
-                std::vector<rectangle> faces = detector(cimg);
 
-                // Find the pose of each face.
-                std::vector<full_object_detection> shapes;
-                for (unsigned long i = 0; i < faces.size(); ++i) {
-                    shapes.push_back(pose_model(cimg, faces[i]));
+                    // Detect faces
+                    std::vector<rectangle> faces = detector(cimg);
+
+
+                    // Find the pose of each face.
+                    std::vector<full_object_detection> shapes;
+                    for (unsigned long i = 0; i < faces.size(); ++i) {
+                        shapes.push_back(pose_model(cimg, faces[i]));
+                    }
+
+
+
+                    // Display it all on the screen
+                    win.clear_overlay();
+                    win.set_image(cimg);
+
+
+                    // calculate overlay
+                    FaceRecognizer recog = FaceRecognizer();
+                    std::vector<image_window::overlay_line> lines = recog.calculateOverlay(shapes);
+
+                if (frameCount >= 5) {
+                    int note = recog.getNote();
+
+                    if(note > tmp+1 || note < tmp-1){
+                       midiOutput.sendNoteOn(2, note, 80);
+                    }
+                    tmp = note;
+                    frameCount = 0;
                 }
+                    // add overlay
+                    win.add_overlay(lines);
 
 
 
-                // Display it all on the screen
-                win.clear_overlay();
-                win.set_image(cimg);
 
-
-                // calculate overlay
-                FaceRecognizer recog = FaceRecognizer();
-                std::vector<image_window::overlay_line> lines = recog.calculateOverlay(shapes);
-                int emotion = recog.getEmotion();
-
-                if(emotion > tmp+1 || emotion < tmp-1){
-                   noteC = noteC+=2*emotion;
-                   midiOutput.sendNoteOn(channel, noteC, velocity);
-                   midiOutput.sendController(2,10,100);
-                }
-                noteC = 60;
-                tmp = emotion;
-
-                // add overlay
-                win.add_overlay(lines);
             }
         }
     }
