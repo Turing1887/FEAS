@@ -34,7 +34,6 @@ int main()
         }
 
         image_window win;  // TODO: von außen aufrufen
-
         // Load face detection and pose estimation models.
         frontal_face_detector detector = get_frontal_face_detector();
         shape_predictor pose_model;

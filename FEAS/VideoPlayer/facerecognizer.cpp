@@ -72,6 +72,14 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
 
         const full_object_detection& d = shapes[i];
 
+        if(emotion == 0) {
+            lines.push_back(dlib::image_window::overlay_line(point(150, 50), point(150, 450), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(150, 450), point(500, 450), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(500, 450), point(500, 50), rgb_pixel(255,0,0)));
+            lines.push_back(dlib::image_window::overlay_line(point(500, 50), point(150, 50), rgb_pixel(255,0,0)));
+        }
+
+
         // lips outer part
         for (int i = 49; i < 59; ++i) {
             lines.push_back(dlib::image_window::overlay_line(d.part(i), d.part(i - 1), rgb_pixel(0,100,255)));
@@ -185,22 +193,6 @@ std::vector<image_window::overlay_line> FaceRecognizer::calculateOverlay(std::ve
 
         //qDebug() << lipheight;
 
-        /*
-        if(mh/2 >= lipheight) {
-
-            // neutral / traurig
-            emotion = lipheight;
-            lines.push_back(dlib::image_window::overlay_line(d.part(48), d.part(54), rgb_pixel(255,255,255)));
-        } else {
-
-            // glücklich
-            emotion = 1;
-            lines.push_back(dlib::image_window::overlay_line(d.part(48), d.part(54), rgb_pixel(0,0,255)));
-        }
-
-        */
-        //point secondPoint = point(100,100);
-        //point firstPoint = d.part(50);
     }
 
     return lines;
