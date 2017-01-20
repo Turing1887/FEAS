@@ -7,11 +7,13 @@
 #include <QThread>
 #include <qDebug>
 #include <facerecognizer.h>
+#include <opencv2/imgproc/imgproc.hpp>
 #include "midiinput.h"
 
 using namespace dlib;
 using namespace std;
 using namespace drumstick::rt;
+
 
 int main()
 {
@@ -53,9 +55,9 @@ int main()
                 // long as temp is valid.  Also don't do anything to temp that would cause it
                 // to reallocate the memory which stores the image as that will make cimg
                 // contain dangling pointers.  This basically means you shouldn't modify temp
-                // while using cimg.
-                cv_image<bgr_pixel> cimg(temp);
+                // while using cimg
 
+                   cv_image<bgr_pixel> cimg(temp);
 
                     // Detect faces
                     std::vector<rectangle> faces = detector(cimg);
