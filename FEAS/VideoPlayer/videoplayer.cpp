@@ -7,6 +7,7 @@ VideoPlayer::VideoPlayer(QWidget *parent)
     , ui(new Ui::VideoPlayer)
     , videoThread(new VideoEngine)
     , copyProcessor(new CopyProcessor)
+
 {
     ui->setupUi(this);
     videoThread->setProcessor(copyProcessor);
@@ -40,4 +41,29 @@ void VideoPlayer::on_actionKamera_ffnen_triggered()
 void VideoPlayer::on_actionPlay_triggered()
 {
     videoThread->start();
+}
+
+void VideoPlayer::on_AugenbrauenOnOff_toggled(bool checked)
+{
+    copyProcessor->toggleAug(checked);
+}
+
+void VideoPlayer::on_MundOnOff_toggled(bool checked)
+{
+    copyProcessor->toggleMund(checked);
+}
+
+void VideoPlayer::on_AugenbrauenSlider_valueChanged(int value)
+{
+    copyProcessor->setAugVal(value);
+}
+
+void VideoPlayer::on_MundSlider_valueChanged(int value)
+{
+    copyProcessor->setMundVal(value);
+}
+
+void VideoPlayer::on_horizontalSlider_valueChanged(int value)
+{
+    copyProcessor->setVolume(value);
 }

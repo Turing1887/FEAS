@@ -1,3 +1,18 @@
+#include "videoplayer.h"
+#include <QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    VideoPlayer w;
+    w.show();
+
+    return a.exec();
+
+
+}
+
+/*
 #include <dlib/opencv.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <dlib/image_processing/frontal_face_detector.h>
@@ -111,5 +126,5 @@ int main()
     }
 }
 
-
+*/
 
