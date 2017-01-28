@@ -182,13 +182,7 @@ void FaceRecognizer::calculateOverlay(cv::Mat mat, std::vector<full_object_detec
             second = Point(secondX, secondY);
             line(mat, first, second, Scalar(255,0,0), 2);
 
-             point lowerA = point(0,500);
 
-             for(int i = 19; i < 25; i++) {
-                 if (d.part(i).y() < lowerA.y()){
-                     lowerA = d.part(i);
-                 }
-             }
 
             firstX = d.part(21).x();
             firstY = d.part(21).y();
@@ -208,6 +202,13 @@ void FaceRecognizer::calculateOverlay(cv::Mat mat, std::vector<full_object_detec
         // end Augenbrauen
 
         // Augenbrauenhöhe
+        point lowerA = point(0,500);
+
+        for(int i = 19; i < 25; i++) {
+            if (d.part(i).y() < lowerA.y()){
+                lowerA = d.part(i);
+            }
+        }
         int an = d.part(27).y() - lowerA.y();
 
         octave = (an-35) / 3;
